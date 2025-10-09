@@ -547,76 +547,72 @@
 
         </div>
     </div>
+</body>
+
+<script>
+    // Script at end of body - all elements are loaded
+    const searchBox = document.getElementById('searchBox');
+    const postsGrid = document.getElementById('postsGrid');
+    const allCards = document.querySelectorAll('.post-card');
+    const resultsInfo = document.getElementById('resultsInfo');
+    const filterButtons = document.querySelectorAll('.toc-filter');
     
-    <script>
-        // Wait for DOM to be ready
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality
-            const searchBox = document.getElementById('searchBox');
-            const postsGrid = document.getElementById('postsGrid');
-            const allCards = document.querySelectorAll('.post-card');
-            const resultsInfo = document.getElementById('resultsInfo');
-            const filterButtons = document.querySelectorAll('.toc-filter');
+    let currentCategory = 'all';
+    
+    // Category keywords mapping
+    const categoryKeywords = {
+        'tools': ['tool', 'drill', 'saw', 'wrench', 'hammer', 'garage', 'workshop', 'diy', 'build', 'shelv', 'compressor', 'power', 'cordless', 'dewalt', 'milwaukee', 'makita'],
+        'kitchen': ['kitchen', 'coffee', 'cook', 'food', 'appliance', 'pot', 'pan', 'cup', 'mug', 'blender', 'microwave', 'oven', 'refrigerator', 'drip'],
+        'tech': ['tech', 'python', 'code', 'software', 'computer', 'laptop', 'keyboard', 'mouse', 'program', 'app', 'digital', 'electronic', 'gadget', 'phone'],
+        'outdoor': ['outdoor', 'camping', 'hiking', 'sport', 'bike', 'tent', 'backpack', 'trail', 'adventure', 'fitness', 'run', 'climb'],
+        'top 10': ['top 10', 'top ten', 'best']
+    };
+    
+    // Category filter
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.category;
+            filterPosts();
+        });
+    });
+    
+    // Search filter - use multiple events for better mobile compatibility
+    searchBox.addEventListener('input', filterPosts);
+    searchBox.addEventListener('keyup', filterPosts);
+    searchBox.addEventListener('change', filterPosts);
+    
+    function matchesCategory(title, category) {
+        if (category === 'all') return true;
+        
+        const keywords = categoryKeywords[category] || [];
+        return keywords.some(keyword => title.includes(keyword));
+    }
+    
+    function filterPosts() {
+        const searchTerm = searchBox.value.toLowerCase();
+        let visibleCount = 0;
+        
+        allCards.forEach(card => {
+            const title = card.dataset.title;
+            const matchesSearch = !searchTerm || title.includes(searchTerm);
+            const matchesCat = matchesCategory(title, currentCategory);
             
-            let currentCategory = 'all';
-        
-        // Category keywords mapping
-        const categoryKeywords = {
-            'tools': ['tool', 'drill', 'saw', 'wrench', 'hammer', 'garage', 'workshop', 'diy', 'build', 'shelv', 'compressor', 'power', 'cordless', 'dewalt', 'milwaukee', 'makita'],
-            'kitchen': ['kitchen', 'coffee', 'cook', 'food', 'appliance', 'pot', 'pan', 'cup', 'mug', 'blender', 'microwave', 'oven', 'refrigerator', 'drip'],
-            'tech': ['tech', 'python', 'code', 'software', 'computer', 'laptop', 'keyboard', 'mouse', 'program', 'app', 'digital', 'electronic', 'gadget', 'phone'],
-            'outdoor': ['outdoor', 'camping', 'hiking', 'sport', 'bike', 'tent', 'backpack', 'trail', 'adventure', 'fitness', 'run', 'climb'],
-            'top 10': ['top 10', 'top ten', 'best']
-        };
-        
-        // Category filter
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.dataset.category;
-                filterPosts();
-            });
+            if (matchesSearch && matchesCat) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
         });
         
-        // Search filter - use both input and keyup for better mobile compatibility
-        searchBox.addEventListener('input', filterPosts);
-        searchBox.addEventListener('keyup', filterPosts);
-        searchBox.addEventListener('change', filterPosts);
-        
-        function matchesCategory(title, category) {
-            if (category === 'all') return true;
-            
-            const keywords = categoryKeywords[category] || [];
-            return keywords.some(keyword => title.includes(keyword));
+        // Update results info
+        if (searchTerm || currentCategory !== 'all') {
+            resultsInfo.textContent = `Showing ${visibleCount} of ${allCards.length} articles`;
+        } else {
+            resultsInfo.textContent = '';
         }
-        
-        function filterPosts() {
-            const searchTerm = searchBox.value.toLowerCase();
-            let visibleCount = 0;
-            
-            allCards.forEach(card => {
-                const title = card.dataset.title;
-                const matchesSearch = !searchTerm || title.includes(searchTerm);
-                const matchesCat = matchesCategory(title, currentCategory);
-                
-                if (matchesSearch && matchesCat) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Update results info
-            if (searchTerm || currentCategory !== 'all') {
-                resultsInfo.textContent = `Showing ${visibleCount} of ${allCards.length} articles`;
-            } else {
-                resultsInfo.textContent = '';
-            }
-        }
-        
-        }); // End DOMContentLoaded
-    </script>
-</body>
+    }
+</script>
 </html>
