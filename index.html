@@ -3,106 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Practo Blog - Product Reviews & Recommendations</title>
+    <title>Practo Blog - Trending Product Reviews & Recommendations</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
-        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
-        .post { background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #3498db; }
-        .post h2 { margin-top: 0; color: #2c3e50; }
-        .post a { color: #3498db; text-decoration: none; font-weight: 500; }
-        .post a:hover { text-decoration: underline; }
-        .date { color: #7f8c8d; font-size: 0.9em; }
-        .empty { text-align: center; color: #7f8c8d; padding: 40px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+        .hero h1 {
+            font-size: 3.5em;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -1px;
+        }
+        .hero p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+        .hero .tagline {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Stats Bar */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease 0.3s both;
+        }
+        .stat {
+            background: rgba(255,255,255,0.95);
+            padding: 20px 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #667eea;
+            display: block;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+        .post-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        .post-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .post-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .post-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .post-title a:hover {
+            color: #667eea;
+        }
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .post-date {
+            color: #999;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .read-more {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .read-more:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Empty State */
+        .empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+            font-size: 1.3em;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5em; }
+            .hero p { font-size: 1.1em; }
+            .stats { flex-direction: column; gap: 15px; }
+            .posts-grid { grid-template-columns: 1fr; gap: 20px; }
+            .post-card { padding: 25px; }
+        }
     </style>
 </head>
 <body>
-    <h1>Practo Blog</h1>
-    <p>Your trusted source for product reviews, DIY guides, and expert tool recommendations.</p>
+    <div class="container">
+        <div class="hero">
+            <h1>🔥 Practo Blog</h1>
+            <p>Discover trending products, expert reviews & smart buying guides</p>
+            <div class="tagline">✨ AI-Powered • Always Fresh • Curated Daily</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-number">17</span>
+                <span class="stat-label">Articles</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Updated</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Authentic</span>
+            </div>
+        </div>
+        
+        <div class="posts-grid">
 
-    <div class="post">
-        <h2><a href="posts/2025-10-09-alternatives-to-drywall.html">Alternatives To Drywall</a></h2>
-        <p class="date">Published: 2025-10-09</p>
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-alternatives-to-drywall.html">Alternatives To Drywall</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-alternatives-to-drywall.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-anyone-know-what-this-is-home-trespasser-came-up-to-the-window-with-a-strange-tool.html">Anyone Know What This Is Home Trespasser Came Up To The Window With A Strange Tool</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-anyone-know-what-this-is-home-trespasser-came-up-to-the-window-with-a-strange-tool.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-guilty-until-proven-innocent-fight-between-docs-and-insurers-over-downcoding.html">Guilty Until Proven Innocent Fight Between Docs And Insurers Over Downcoding</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-guilty-until-proven-innocent-fight-between-docs-and-insurers-over-downcoding.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-how-is-this-built.html">How Is This Built</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-how-is-this-built.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-if-there-is-a-tool-you-i-bought-but-not-really-use.html">If There Is A Tool You I Bought But Not Really Use</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-if-there-is-a-tool-you-i-bought-but-not-really-use.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-intel-s-open-source-strategy-is-changing-at-odds-with-the-ethos-of-open-source.html">Intel S Open Source Strategy Is Changing At Odds With The Ethos Of Open Source</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-intel-s-open-source-strategy-is-changing-at-odds-with-the-ethos-of-open-source.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-introducing-figure-03.html">Introducing Figure 03</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-introducing-figure-03.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-looking-for-a-durable-winter-boots-that-will-truly-last.html">Looking For A Durable Winter Boots That Will Truly Last</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-looking-for-a-durable-winter-boots-that-will-truly-last.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-need-a-good-car-cover-what-do-you-recommend.html">Need A Good Car Cover What Do You Recommend</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-need-a-good-car-cover-what-do-you-recommend.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-never-seen-a-mechanical-screwdriver.html">Never Seen A Mechanical Screwdriver</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-never-seen-a-mechanical-screwdriver.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-nobel-prize-in-literature-2025-laszlo-krasznahorkai.html">Nobel Prize In Literature 2025 Laszlo Krasznahorkai</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-nobel-prize-in-literature-2025-laszlo-krasznahorkai.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-show-hn-i-built-a-web-framework-in-c.html">Show Hn I Built A Web Framework In C</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-show-hn-i-built-a-web-framework-in-c.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-single-serve-coffee-makers-for-the-low-motivated.html">Single Serve Coffee Makers For The Low Motivated</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-single-serve-coffee-makers-for-the-low-motivated.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-spigot-dripping-on-antique-thermos-how-can-i-repair-or-is-this-even-repairable-it-leaks-a-little-drip-from-the-nozzle.html">Spigot Dripping On Antique Thermos How Can I Repair Or Is This Even Repairable It Leaks A Little Drip From The Nozzle</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-spigot-dripping-on-antique-thermos-how-can-i-repair-or-is-this-even-repairable-it-leaks-a-little-drip-from-the-nozzle.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-the-c-programmer-and-educator-rainer-grimm-has-passed-away.html">The C Programmer And Educator Rainer Grimm Has Passed Away</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-the-c-programmer-and-educator-rainer-grimm-has-passed-away.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-us-opens-tesla-probe-after-more-crashes-involving-its-full-self-driving.html">Us Opens Tesla Probe After More Crashes Involving Its Full Self Driving</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-us-opens-tesla-probe-after-more-crashes-involving-its-full-self-driving.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <h2 class="post-title"><a href="posts/2025-10-09-what-s-a-good-winter-jacket-that-will-last-me-a-long-time.html">What S A Good Winter Jacket That Will Last Me A Long Time</a></h2>
+                <div class="post-meta">
+                    <span class="post-date">📅 2025-10-09</span>
+                    <a href="posts/2025-10-09-what-s-a-good-winter-jacket-that-will-last-me-a-long-time.html" class="read-more">Read More →</a>
+                </div>
+            </div>
+
+        </div>
     </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-anyone-know-what-this-is-home-trespasser-came-up-to-the-window-with-a-strange-tool.html">Anyone Know What This Is Home Trespasser Came Up To The Window With A Strange Tool</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-guilty-until-proven-innocent-fight-between-docs-and-insurers-over-downcoding.html">Guilty Until Proven Innocent Fight Between Docs And Insurers Over Downcoding</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-how-is-this-built.html">How Is This Built</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-if-there-is-a-tool-you-i-bought-but-not-really-use.html">If There Is A Tool You I Bought But Not Really Use</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-intel-s-open-source-strategy-is-changing-at-odds-with-the-ethos-of-open-source.html">Intel S Open Source Strategy Is Changing At Odds With The Ethos Of Open Source</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-introducing-figure-03.html">Introducing Figure 03</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-looking-for-a-durable-winter-boots-that-will-truly-last.html">Looking For A Durable Winter Boots That Will Truly Last</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-need-a-good-car-cover-what-do-you-recommend.html">Need A Good Car Cover What Do You Recommend</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-never-seen-a-mechanical-screwdriver.html">Never Seen A Mechanical Screwdriver</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-nobel-prize-in-literature-2025-laszlo-krasznahorkai.html">Nobel Prize In Literature 2025 Laszlo Krasznahorkai</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-show-hn-i-built-a-web-framework-in-c.html">Show Hn I Built A Web Framework In C</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-single-serve-coffee-makers-for-the-low-motivated.html">Single Serve Coffee Makers For The Low Motivated</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-spigot-dripping-on-antique-thermos-how-can-i-repair-or-is-this-even-repairable-it-leaks-a-little-drip-from-the-nozzle.html">Spigot Dripping On Antique Thermos How Can I Repair Or Is This Even Repairable It Leaks A Little Drip From The Nozzle</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-the-c-programmer-and-educator-rainer-grimm-has-passed-away.html">The C Programmer And Educator Rainer Grimm Has Passed Away</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-us-opens-tesla-probe-after-more-crashes-involving-its-full-self-driving.html">Us Opens Tesla Probe After More Crashes Involving Its Full Self Driving</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
-    <div class="post">
-        <h2><a href="posts/2025-10-09-what-s-a-good-winter-jacket-that-will-last-me-a-long-time.html">What S A Good Winter Jacket That Will Last Me A Long Time</a></h2>
-        <p class="date">Published: 2025-10-09</p>
-    </div>
-
 </body>
 </html>
