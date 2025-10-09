@@ -589,13 +589,33 @@
                 return keywords.some(keyword => title.includes(keyword));
             }
             
+            function matchesSearchTerm(title, searchTerm) {
+                if (!searchTerm) return true;
+                
+                // Direct title match first
+                if (title.includes(searchTerm)) return true;
+                
+                // Check if search term matches any category keywords
+                for (let category in categoryKeywords) {
+                    const keywords = categoryKeywords[category];
+                    // If they search for category name (like "tools"), show all related items
+                    if (category.includes(searchTerm) || searchTerm.includes(category)) {
+                        if (keywords.some(keyword => title.includes(keyword))) {
+                            return true;
+                        }
+                    }
+                }
+                
+                return false;
+            }
+            
             function filterPosts() {
                 const searchTerm = searchBox.value.toLowerCase();
                 let visibleCount = 0;
                 
                 allCards.forEach(card => {
                     const title = card.dataset.title;
-                    const matchesSearch = !searchTerm || title.includes(searchTerm);
+                    const matchesSearch = matchesSearchTerm(title, searchTerm);
                     const matchesCat = matchesCategory(title, currentCategory);
                     
                     if (matchesSearch && matchesCat) {
