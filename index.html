@@ -277,7 +277,7 @@
         
         <!-- Search Bar -->
         <div class="search-container">
-            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search for products, tools, reviews..." />
+            <input type="search" class="search-box" id="searchBox" placeholder="🔍 Search for products, tools, reviews..." autocomplete="off" />
         </div>
         
         <!-- Table of Contents / Filters -->
@@ -589,6 +589,9 @@
     searchBox.addEventListener('input', filterPosts);
     searchBox.addEventListener('keyup', filterPosts);
     searchBox.addEventListener('change', filterPosts);
+    searchBox.addEventListener('touchend', function() {
+        setTimeout(filterPosts, 100);
+    });
     
     function matchesCategory(title, category) {
         if (category === 'all') return true;
