@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Test</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .card {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .hidden {
+            display: none;
+        }
+        #debug {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Functionality Test</h1>
+    
+    <div id="debug">Debug info will appear here...</div>
+    
+    <input 
+        type="search" 
+        class="search-box" 
+        id="searchBox" 
+        placeholder="Type to search..." 
+        autocomplete="off"
+    />
+    
+    <div id="results"></div>
+    
+    <div id="cards">
+        <div class="card" data-title="coffee maker">Coffee Maker Article</div>
+        <div class="card" data-title="drill tool">Power Drill Article</div>
+        <div class="card" data-title="laptop computer">Laptop Review</div>
+        <div class="card" data-title="camping tent">Camping Tent Guide</div>
+    </div>
+
+    <script>
+        // Debug logging
+        function log(msg) {
+            const debug = document.getElementById('debug');
+            debug.innerHTML += msg + '<br>';
+            console.log(msg);
+        }
+        
+        log('Script started...');
+        
+        // Get elements
+        const searchBox = document.getElementById('searchBox');
+        const cards = document.querySelectorAll('.card');
+        const results = document.getElementById('results');
+        
+        log('searchBox: ' + (searchBox ? 'Found' : 'NOT FOUND'));
+        log('cards count: ' + cards.length);
+        
+        // Filter function
+        function filterCards() {
+            const searchTerm = searchBox.value.toLowerCase();
+            log('Search term: "' + searchTerm + '"');
+            
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const title = card.dataset.title;
+                const matches = !searchTerm || title.includes(searchTerm);
+                
+                if (matches) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            results.textContent = `Showing ${visibleCount} of ${cards.length} items`;
+            log(`Filtered: ${visibleCount} visible`);
+        }
+        
+        // Add event listeners
+        searchBox.addEventListener('input', function(e) {
+            log('INPUT event fired');
+            filterCards();
+        });
+        
+        searchBox.addEventListener('keyup', function(e) {
+            log('KEYUP event fired');
+            filterCards();
+        });
+        
+        searchBox.addEventListener('change', function(e) {
+            log('CHANGE event fired');
+            filterCards();
+        });
+        
+        // Also try touchend for iOS
+        searchBox.addEventListener('touchend', function(e) {
+            log('TOUCHEND event fired');
+            setTimeout(filterCards, 100);
+        });
+        
+        log('Event listeners added');
+        
+        // Initial display
+        filterCards();
+    </script>
+</body>
+</html>
