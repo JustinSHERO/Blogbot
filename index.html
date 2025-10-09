@@ -542,6 +542,15 @@
         
         let currentCategory = 'all';
         
+        // Category keywords mapping
+        const categoryKeywords = {
+            'tools': ['tool', 'drill', 'saw', 'wrench', 'hammer', 'garage', 'workshop', 'diy', 'build', 'shelv', 'compressor', 'power', 'cordless', 'dewalt', 'milwaukee', 'makita'],
+            'kitchen': ['kitchen', 'coffee', 'cook', 'food', 'appliance', 'pot', 'pan', 'cup', 'mug', 'blender', 'microwave', 'oven', 'refrigerator', 'drip'],
+            'tech': ['tech', 'python', 'code', 'software', 'computer', 'laptop', 'keyboard', 'mouse', 'program', 'app', 'digital', 'electronic', 'gadget', 'phone'],
+            'outdoor': ['outdoor', 'camping', 'hiking', 'sport', 'bike', 'tent', 'backpack', 'trail', 'adventure', 'fitness', 'run', 'climb'],
+            'top 10': ['top 10', 'top ten', 'best']
+        };
+        
         // Category filter
         filterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -557,16 +566,23 @@
             filterPosts();
         });
         
+        function matchesCategory(title, category) {
+            if (category === 'all') return true;
+            
+            const keywords = categoryKeywords[category] || [];
+            return keywords.some(keyword => title.includes(keyword));
+        }
+        
         function filterPosts() {
             const searchTerm = searchBox.value.toLowerCase();
             let visibleCount = 0;
             
             allCards.forEach(card => {
                 const title = card.dataset.title;
-                const matchesSearch = title.includes(searchTerm);
-                const matchesCategory = currentCategory === 'all' || title.includes(currentCategory);
+                const matchesSearch = !searchTerm || title.includes(searchTerm);
+                const matchesCat = matchesCategory(title, currentCategory);
                 
-                if (matchesSearch && matchesCategory) {
+                if (matchesSearch && matchesCat) {
                     card.style.display = 'block';
                     visibleCount++;
                 } else {
